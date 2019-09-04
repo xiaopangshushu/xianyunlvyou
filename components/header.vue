@@ -14,17 +14,46 @@
         <nuxt-link to="/air">国内机票</nuxt-link>
       </el-row>
       <!-- 登录跳转 -->
-      <div>
+      <div v-if="!this.$store.state.user.userInfo.token">
+      <!-- <div v-if="false"> -->
         <nuxt-link to="/user/login">登录 / 跳转</nuxt-link>
       </div>
+
+      <div v-else>
+         <el-dropdown >
+  <span class="el-dropdown-link">
+    <!-- 图片这里值得注意的是，后台返回的图片地址是相对路径，所以，，应该在前面加上基准路径 -->
+    <img
+      :src="`${$axios.defaults.baseURL}${this.$store.state.user.userInfo.user.defaultAvatar}`"
+      alt="用户头像"
+    />
+    <span>{{ this.$store.state.user.userInfo.user.nickname }}</span><i class="el-icon-arrow-down el-icon--right"></i>
+  </span>
+  <el-dropdown-menu slot="dropdown">
+    <el-dropdown-item icon="el-icon-circle-check">个人中心</el-dropdown-item>
+     <!-- click.native 给第三方组件添加事件需要加上native -->
+    <el-dropdown-item icon="el-icon-circle-check" @click.native="handleLogout">退出</el-dropdown-item>
+  </el-dropdown-menu>
+</el-dropdown>
+      </div>
+     
     </el-row>
   </div>
 </template>
 
 <script>
 export default {
-  mounted(){
-    console.log(this.$store.state.userInfo.token)
+  mounted() {
+    // user 应该是user.js的user  因为这个方法是在user.js中的方法吧
+    // console.log(this.$store.state.user.userInfo.token)
+    // console.log(this.$store)
+  },
+  methods:{
+    handleLogout(){
+this.$store.commit('clearUserInfo')
+this.$message.success('退出成功')
+
+    }
   }
 };
 </script>
@@ -67,10 +96,21 @@ export default {
 }
 .logo {
   padding-top: 9px;
-  img{
+  img {
     display: block;
     width: 156px;
     height: 42px;
+  }
+}
+.el-dropdown-link img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  vertical-align: middle;
+  &:hover{
+    border:2px #409eff solid;
   }
 }
 </style> 
