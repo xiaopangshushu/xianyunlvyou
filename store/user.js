@@ -23,6 +23,7 @@ export const state = () =>{   //所以一般这样写
 export const mutations = {
      // 设置用户信息,mutations下的方法第一个参数固定是state
     // data参数不是必须的，是调用方法时候传入的参数
+    // 设置，可能是登录的状态保持的
     setUserInfo(state,data){
         //data是后台返回的用户信息
         state.userInfo = data
