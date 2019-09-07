@@ -24,6 +24,7 @@
           placeholder="请搜索出发城市"
           v-model="searchForm.departCity"
           @select="handleDepartSelect"
+          @blur="handleDepartBlur"
           class="el-autocomplete"
         ></el-autocomplete>
       </el-form-item>
@@ -33,6 +34,7 @@
           placeholder="请搜索到达城市"
           v-model="searchForm.destCity"
           @select="handleDestSelect"
+          @blur="handleDestBlur"
           class="el-autocomplete"
         ></el-autocomplete>
       </el-form-item>
@@ -75,7 +77,9 @@ export default {
         destCity: "", //目标城市
         destCode: "", //目标城市代码
         departDate: "" // 出发日期
-      }
+      },
+      departData:[], // 后台返回的，出发城市的数据
+      destData:[]  // 后台返回的，目的城市的数据
     };
   },
   methods: {
@@ -112,8 +116,10 @@ export default {
           v.value = v.name.slice(0, v.name.length - 1);
           newData.push(v);
         });
-        this.searchForm.departCity = newData[0].value;
-        this.searchForm.departCode = newData[0].sort;
+        // this.searchForm.departCity = newData[0].value;
+        // this.searchForm.departCode = newData[0].sort;
+        this.departData = newData
+        // console.log(this.departData)
         cb(newData); // 把数据显示在下拉菜单中
       });
     },
@@ -140,10 +146,11 @@ export default {
         data.forEach(v => {
           v.value = v.name.slice(0, v.name.length - 1);
           newData.push(v);
-          console.log(123);
+          // console.log(123);
         });
-        this.searchForm.destCity = newData[0].value;
-        this.searchForm.destCode = newData[0].sort;
+        // this.searchForm.destCity = newData[0].value;
+        // this.searchForm.destCode = newData[0].sort;
+        this.destData = newData
         cb(newData);
       });
     },
@@ -175,7 +182,7 @@ export default {
       console.log(this.searchForm.departDate);
     },
 
-    // 触发和目标城市切换时触发
+    // 出发和目标城市切换时触发
     handleReverse() {
       // 切换城市，其实就是交叉赋值  // 可以把所有的数据都解构出来，看起来高大上
       const { departCity, departCode,destCity, destCode  } = this.searchForm;
@@ -185,7 +192,16 @@ export default {
       this.searchForm.departCode = destCode
       this.searchForm.destCode = departCode
     },
-
+    // 搜索出发城市，输入失焦时触发
+    handleDepartBlur(){
+      this.searchForm.departCity = this.departData[0]? this.departData[0].value :''
+      this.searchForm.departCode = this.departData[0]? this.departData[0].sort :''
+    },
+    // 搜索目的城市，输入失焦时触发
+    handleDestBlur(){
+      this.searchForm.destCity = this.destData[0] ? this.destData[0].value : ''
+      this.searchForm.destCode = this.destData[0] ? this.destData[0].sort : ''
+    },
     // 提交表单是触发
     handleSubmit() {
       // 非空验证,其实是可以在rules的规则中写的，但是rules的页面默认提示会影响布局
