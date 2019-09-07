@@ -50,8 +50,11 @@ export default {
   },
   methods:{
     handleLogout(){
-this.$store.commit('clearUserInfo')
+this.$store.commit('user/clearUserInfo')
 this.$message.success('退出成功')
+setTimeout(()=>{
+           this.$router.push("/") 
+           },1000)
 
     }
   }
